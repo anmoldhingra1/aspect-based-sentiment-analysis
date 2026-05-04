@@ -4,11 +4,17 @@
 
 Fine-grained sentiment extraction at the aspect level. Traditional sentiment analysis assigns a single polarity label to an entire document or sentence. Aspect-based sentiment analysis decomposes this into individual sentiment judgments for specific features or aspects mentioned in the text. This system automatically identifies aspects within reviews or feedback and assigns independent sentiment labels to each, enabling precise feature-level understanding of customer opinion.
 
+## Why This Exists
+
+Static sentiment scores hide the actual user signal. A customer can like the product, hate onboarding, and be neutral about pricing in the same paragraph.
+
+This repo is a small NLP proof point around extracting structured, feature-level signal from messy text. It connects to the same production AI muscle behind Rerato: convert unstructured content into structured, usable application state.
+
 ## Overview
 
 Customers rarely have monolithic opinions. A user reviewing a hotel might praise the "location" and "cleanliness" while criticizing "staff responsiveness" and "pricing." Coarse-grained sentiment analysis would collapse this into a single score, losing critical nuance. Aspect-based sentiment analysis (ABSA) operates at the semantic granularity where business intelligence lives—extracting structured sentiment signals tied to specific product or service dimensions.
 
-This implementation combines aspect term extraction (identifying what features are discussed) with aspect sentiment classification (determining the polarity toward each feature). The architecture leverages pre-trained language models with aspect-aware attention mechanisms, achieving state-of-the-art performance on standard benchmarks (SemEval 2016, SemEval 2019).
+This implementation combines aspect term extraction (identifying what features are discussed) with aspect sentiment classification (determining the polarity toward each feature). The architecture uses pre-trained language models with aspect-aware attention mechanisms.
 
 ## Installation
 
@@ -315,19 +321,16 @@ improvement_targets = sorted(aspect_scores.items(),
                              key=lambda x: sum(x[1])/len(x[1]))
 ```
 
-## Performance Metrics
+## Evaluation Notes
 
-Evaluated on SemEval 2016 Task 5 (restaurants domain):
+Use standard ABSA datasets such as SemEval as a benchmark starting point, then validate on your own domain. Cross-domain performance can vary meaningfully across restaurants, laptops, support tickets, product reviews, and internal feedback.
 
-| Metric | Performance |
-|--------|-------------|
-| Aspect Term Extraction F1 | 0.842 |
-| Aspect Sentiment Accuracy | 0.897 |
-| Joint ABSA F1 | 0.761 |
+Recommended metrics:
 
-Cross-domain evaluation (restaurant → laptop):
-- F1 drop: 4.2% (minimal domain shift impact)
-- Fine-tuning on 500 examples: +3.5% F1
+- Aspect term extraction F1
+- Aspect sentiment accuracy
+- Joint aspect-sentiment F1
+- Cross-domain holdout performance
 
 ## Configuration
 
@@ -377,4 +380,4 @@ This work is provided as-is for research and commercial applications.
 
 ---
 
-**Built by** [Anmol Dhingra](https://anmol.one)
+**Built by** [Anmol Dhingra](https://github.com/anmoldhingra1), founder of [Rerato](https://trivana.ai).
